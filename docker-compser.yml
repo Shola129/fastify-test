@@ -1,0 +1,64 @@
+services:
+    postgres-db:
+        image: postgres:16-aipine
+        container_name: ass_db
+        restart: unless-stoped
+        
+
+        environment:
+            POSTGRES_DB:ass_progress
+            POSTGRES_USER: shola
+            POSTGRES_PASSWORD: ${120shola}
+        volumse:
+            -postgres-data: /var/lib/post/postgresql/data
+        network:
+            -backend:
+        heathcheck:
+            test:["CMD-SHELL", "pg_isready -u shola -d ass_progress"]
+            interval:10s
+            timeout:5s
+            retries:3
+    redis:
+        image: redis:8-alpine
+        container_name: ass_redis
+        restart: unless-stoped
+        command: redis-server --requires ${120shola}
+        volumse:
+            -redis-data:/data
+        network:
+            -backend
+        heathcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 3 
+    app:
+        build:
+            context:.
+            dockerfile:Dockerfile
+        container_name: ass_app
+        restart: unless-stoped
+        ports:
+            -"127.0.0.1:3000"
+        env_file:
+            .env
+        depends_on:
+            postgres-db:
+                condition: service_healthy
+            redis:
+                -backend
+            
+            heathcheck:
+                tast: ["CMD", "curl", "-f", "https://localhost:3000/health"]
+                interval: 30s
+                timeout: 10s
+                retries: 3
+                start_period: 40s
+            volumse:
+                postgres-data
+                redis-data
+            network:
+                backend:
+                   driver: bridge
+
+
