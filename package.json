@@ -1,4 +1,23 @@
 {
+  "name": "ass",
+  "version": "1.0.0",
+  "description": "active",
+  "homepage": "https://github.com/Shola129/fastify-test#readme",
+  "bugs": {
+    "url": "https://github.com/Shola129/fastify-test/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shola129/fastify-test.git"
+  },
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "npm run generate postgresql",
+    "start": "node dist/server.js",
+    "postinstall": "prisma skills sync || exit 0"
+  },
   "dependencies": {
     "@fastify/cors": "^11.3.0",
     "@fastify/jwt": "^10.2.2",
@@ -9,6 +28,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
-    "@types/node": "^26.4.1"
+    "@types/node": "^26.4.1",
+    "prisma": "8.0.0-rc.13"
   }
 }
