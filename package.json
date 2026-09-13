@@ -14,13 +14,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate": "npm run generate postgresql",
+    "generate:postgres": "prisma generate --config prisma.config.ts",
+    "generate": "npm run generate postgres",
     "start": "node dist/server.js",
     "postinstall": "prisma skills sync || exit 0"
   },
   "dependencies": {
     "@fastify/cors": "^11.3.0",
     "@fastify/jwt": "^10.2.2",
+    "@prisma/client": "^7.10.0",
     "crypto": "^1.0.1",
     "dotenv": "^17.4.2",
     "fastify": "^5.12.1",
@@ -29,6 +31,6 @@
   },
   "devDependencies": {
     "@types/node": "^26.4.1",
-    "prisma": "8.0.0-rc.13"
+    "prisma": "^8.0.0-rc.13"
   }
 }

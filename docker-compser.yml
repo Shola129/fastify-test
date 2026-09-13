@@ -1,31 +1,29 @@
 services:
     postgres-db:
-        image: postgres:16-aipine
-        container_name: ass_db
-        restart: unless-stoped
-        
-
+        image: postgres:16-alpine
+        container_name: ansfor_db
+        restart: unless-stopped
         environment:
-            POSTGRES_DB:ass_progress
+            POSTGRES_DB: sholaexp
             POSTGRES_USER: shola
             POSTGRES_PASSWORD: ${120shola}
-        volumse:
+        volumes:
             -postgres-data: /var/lib/post/postgresql/data
-        network:
-            -backend:
+        networks:
+            -backend
         heathcheck:
-            test:["CMD-SHELL", "pg_isready -u shola -d ass_progress"]
-            interval:10s
-            timeout:5s
-            retries:3
+            test: ["CMD-SHELL", "pg_isready -u shola -d sholaexp"]
+            interval: 10s
+            timeout: 5s
+            retries: 3
     redis:
         image: redis:8-alpine
-        container_name: ass_redis
-        restart: unless-stoped
-        command: redis-server --requires ${120shola}
-        volumse:
+        container_name: ansofra_redis
+        restart: unless-stopped
+        command: redis-server --requires pass ${120shola}
+        volumes:
             -redis-data:/data
-        network:
+        networks:
             -backend
         heathcheck:
             test: ["CMD", "redis-cli", "ping"]
@@ -34,30 +32,33 @@ services:
             retries: 3 
     app:
         build:
-            context:.
-            dockerfile:Dockerfile
-        container_name: ass_app
-        restart: unless-stoped
+            context: . #the root directory where the dockerfile is located
+            dockerfile: Dockerfile #the df itself
+        container_name: ansofra_app
+        restart: unless-stopped
         ports:
             -"127.0.0.1:3000"
         env_file:
-            .env
+            -.env
         depends_on:
             postgres-db:
                 condition: service_healthy
             redis:
+                # -backend
+                condition: service_healthy
+
+            networks:
                 -backend
-            
             heathcheck:
                 tast: ["CMD", "curl", "-f", "https://localhost:3000/health"]
                 interval: 30s
                 timeout: 10s
                 retries: 3
                 start_period: 40s
-            volumse:
+            volumes:
                 postgres-data
                 redis-data
-            network:
+            networks:
                 backend:
                    driver: bridge
 
