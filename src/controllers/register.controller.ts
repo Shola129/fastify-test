@@ -15,4 +15,3 @@ export class RegisterController{
         return await this.regService.validateEmailService(data, reply);
     }
 }
-
